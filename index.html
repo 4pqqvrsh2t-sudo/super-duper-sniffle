@@ -1134,6 +1134,50 @@ document.addEventListener('DOMContentLoaded', init);
     const reason = ev.reason && ev.reason.message ? ev.reason.message : String(ev.reason);
     showErrorOverlay('Unhandled Promise Rejection: ' + reason, '', '', '', ev.reason || null);
   });
+  /* -----------------------
+   Random click sounds (overlapping allowed)
+   ------------------------*/
+const clickSounds = [
+  'click1.mp3',
+  'click2.mp3',
+  'click3.mp3'
+];
+
+let lastClickIndex = -1;
+
+function playRandomClickSound() {
+  if (clickSounds.length === 0) return;
+
+  // Pick a random sound, avoiding immediate repeat
+  let randomIndex;
+  do {
+    randomIndex = Math.floor(Math.random() * clickSounds.length);
+  } while (randomIndex === lastClickIndex && clickSounds.length > 1);
+
+  lastClickIndex = randomIndex;
+
+  // Create a new Audio instance so sounds can overlap
+  const audio = new Audio(clickSounds[randomIndex]);
+  audio.volume = 0.2; // adjust volume
+  audio.play().catch(() => {});
+}
+
+/* Apply to all clicks on interactive elements */
+document.addEventListener('click', (e) => {
+  const el = e.target;
+
+  if (
+    el.closest('button') ||
+    el.closest('a') ||
+    el.closest('.collapse-header') ||
+    el.closest('.tab-btn') ||
+    el.closest('.edit-btn') ||
+    el.closest('#sidebarArrow')
+  ) {
+    playRandomClickSound();
+  }
+});
+
 })();
 </script>
 
